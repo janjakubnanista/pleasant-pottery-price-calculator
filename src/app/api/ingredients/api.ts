@@ -26,7 +26,10 @@ export const getAuth = () =>
     credentials: {
       client_id: process.env.NEXT_PRIVATE_GOOGLE_CLIENT_ID,
       client_email: process.env.NEXT_PRIVATE_GOOGLE_CLIENT_EMAIL,
-      private_key: process.env.NEXT_PRIVATE_GOOGLE_PRIVATE_KEY,
+      private_key: process.env.NEXT_PRIVATE_GOOGLE_PRIVATE_KEY?.replace(
+        /\\n/g,
+        "\n"
+      ),
       private_key_id: process.env.NEXT_PRIVATE_GOOGLE_PRIVATE_KEY_ID,
       project_id: process.env.NEXT_PRIVATE_GOOGLE_PROJECT_ID,
       universe_domain: "googleapis.com",
