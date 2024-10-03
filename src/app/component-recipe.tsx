@@ -20,16 +20,7 @@ const Recipe: React.FC = () => {
     Ingredient[]
   >("/api/ingredients", fetcher);
 
-  const [items, setItems] = useState<IRecipeItem[]>([
-    {
-      ingredientName: "Bentonite",
-      quantity: 1,
-    },
-    {
-      ingredientName: "Fake",
-      quantity: 10,
-    },
-  ]);
+  const [items, setItems] = useState<IRecipeItem[]>();
   const itemsWithIngredients = useMemo(
     () => findIngredients(ingredients, items),
     [ingredients, items]
