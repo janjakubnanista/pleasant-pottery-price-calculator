@@ -1,6 +1,5 @@
 "use client";
 
-import useSWR from "swr";
 import {
   Combobox,
   ComboboxInput,
@@ -27,7 +26,7 @@ const IngredientPicker: React.FC<{
     (): Ingredient[] =>
       query.trim() === ""
         ? ingredients
-        : fuse.search(query, {}).map(({ item }) => item),
+        : fuse.search(query).map(({ item }) => item),
     [fuse, query, ingredients]
   );
 

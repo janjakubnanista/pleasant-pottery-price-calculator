@@ -16,11 +16,9 @@ import IngredientPicker from "./component-ingredient-picker";
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const Recipe: React.FC = () => {
-  const {
-    data: ingredients = NO_INGREDIENTS,
-    error,
-    isLoading,
-  } = useSWR<Ingredient[]>("/api/ingredients", fetcher);
+  const { data: ingredients = NO_INGREDIENTS, isLoading } = useSWR<
+    Ingredient[]
+  >("/api/ingredients", fetcher);
 
   const [items, setItems] = useState<IRecipeItem[]>([
     {
@@ -57,6 +55,8 @@ const Recipe: React.FC = () => {
       ),
     [setItems]
   );
+
+  if (isLoading) return <div className="p-2 text-center">Loading...</div>;
 
   return (
     <div className="flex flex-col">

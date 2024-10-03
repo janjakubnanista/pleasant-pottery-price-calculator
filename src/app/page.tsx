@@ -1,6 +1,5 @@
 import Image from "next/image";
 import React from "react";
-import IngredientPicker from "./component-ingredient-picker";
 import Recipe from "./component-recipe";
 
 const Home: React.FC = () => {
