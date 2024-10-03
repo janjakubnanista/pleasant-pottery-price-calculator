@@ -5,19 +5,25 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  --text-primary: #efc6dd;
+  --text-secondary: #000000;
+  --background-primary: #30282c;
+  --background-secondary: #abd9f5;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background-secondary: #30282c;
+    --text-secondary: #efc6dd;
   }
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+
+  color: var(--text-secondary);
+  background: var(--background-secondary);
 }
 
 @layer utilities {
