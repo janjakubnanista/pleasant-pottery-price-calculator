@@ -1,6 +1,8 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<p align="center">
+    <img alt="Hand Eye Ceramics" src="./public/logo.svg" width="50%" />
+</p>
 
-## Getting Started
+## Pleasant Pottery Studio Ingredient Price Calculator
 
 First, run the development server:
 
