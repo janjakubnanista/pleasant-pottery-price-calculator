@@ -7,13 +7,7 @@ import {
 } from "fp-ts/lib/TaskEither";
 import { tryCatchK as tryCatchKE } from "fp-ts/lib/Either";
 import { filter as filterA } from "fp-ts/lib/Array";
-import {
-  constant,
-  constFalse,
-  constTrue,
-  constUndefined,
-  pipe,
-} from "fp-ts/lib/function";
+import { constant, constFalse, constTrue, pipe } from "fp-ts/lib/function";
 import { Ingredient } from "./types";
 import { z, ZodSchema, ZodTypeDef } from "zod";
 
