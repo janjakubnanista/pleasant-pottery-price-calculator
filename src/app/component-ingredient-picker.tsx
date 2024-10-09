@@ -42,9 +42,7 @@ const IngredientPicker: React.FC<{
         className="p-2"
         placeholder="Select ingredient"
         displayValue={(ingredient: Ingredient | null | undefined) =>
-          ingredient
-            ? `${ingredient?.name} (${formatPerGramPrice(ingredient)})`
-            : ""
+          ingredient ? ingredient.name : ""
         }
         onChange={(event) => setQuery(event.target.value)}
       />
@@ -76,5 +74,5 @@ const formatPerGramPrice = (ingredient: Ingredient) => {
   const perGramPrice = ingredient.packPrice / ingredient.packQuantity;
   if (perGramPrice < 0.01) return `< ${priceFormatter.format(0.01)} per gram`;
 
-  return `${priceFormatter.format(0.01)} per gram`;
+  return `${priceFormatter.format(perGramPrice)} per gram`;
 };

@@ -19,14 +19,16 @@ const Recipe: React.FC = () => {
   const { data: ingredients = NO_INGREDIENTS, isLoading } = useSWR<
     Ingredient[]
   >("/api/ingredients", fetcher);
-
-  console.log({ ingredients });
+  const availableIngredients = useMemo(
+    () => ingredients.filter(({ available }) => available),
+    [ingredients]
+  );
 
   const [items, setItems] = useState<IRecipeItem[]>([]);
   const [newRecipeItemKey, setNewRecipeItemKey] = useState<number>(0);
   const itemsWithIngredients = useMemo(
-    () => findIngredients(ingredients, items),
-    [ingredients, items]
+    () => findIngredients(availableIngredients, items),
+    [availableIngredients, items]
   );
   const price = useMemo(
     () => calculatePrice(pipe(itemsWithIngredients, right)),
@@ -71,7 +73,7 @@ const Recipe: React.FC = () => {
 
         <NewRecipeItem
           key={`new-recipe-item-${newRecipeItemKey}`}
-          ingredients={ingredients}
+          ingredients={availableIngredients}
           onAdd={handleAddItem}
         />
 
@@ -179,8 +181,13 @@ const RecipeItem: React.FC<{
 
   return (
     <RecipeItemLayout
-      name={<span className="font-bold">{item.ingredient.name}</span>}
-      amount={`${item.item.quantity}g`}
+      name={
+        <span>
+          <span className="font-bold">{item.ingredient.name}</span>{" "}
+          {item.item.quantity}g
+        </span>
+      }
+      amount={priceFormatter.format(getItemPrice(item))}
       extra={
         <button onClick={handleDelete} aria-label="Remove" title="Remove">
           Remove
@@ -245,8 +252,8 @@ const findIngredients = (ingredients: Ingredient[], items: IRecipeItem[]) =>
 const calculatePrice = flow(
   reduce(
     0,
-    (price: number, { ingredient, item }: IRecipeItemAndIngredient) =>
-      price + (ingredient.packQuantity / ingredient.packPrice) * item.quantity
+    (price: number, item: IRecipeItemAndIngredient) =>
+      price + getItemPrice(item)
   )
 );
 
@@ -254,3 +261,6 @@ const priceFormatter = new Intl.NumberFormat("en-CA", {
   style: "currency",
   currency: "CAD",
 });
+
+const getItemPrice = ({ ingredient, item }: IRecipeItemAndIngredient) =>
+  (ingredient.packPrice / ingredient.packQuantity) * item.quantity;
