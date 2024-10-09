@@ -42,7 +42,9 @@ const IngredientPicker: React.FC<{
         className="p-2"
         placeholder="Select ingredient"
         displayValue={(ingredient: Ingredient | null | undefined) =>
-          ingredient?.name ?? ""
+          ingredient
+            ? `${ingredient?.name} (${formatPerGramPrice(ingredient)})`
+            : ""
         }
         onChange={(event) => setQuery(event.target.value)}
       />
@@ -55,7 +57,7 @@ const IngredientPicker: React.FC<{
             disabled={!ingredient.available}
             className="w-[var(--input-width)] p-2 bg-backgroundSecondary text-textSecondary data-[focus]:bg-textSecondary data-[focus]:text-backgroundSecondary"
           >
-            {ingredient.name}
+            {ingredient?.name} ({formatPerGramPrice(ingredient)})
           </ComboboxOption>
         ))}
       </ComboboxOptions>
@@ -64,3 +66,15 @@ const IngredientPicker: React.FC<{
 };
 
 export default IngredientPicker;
+
+const priceFormatter = new Intl.NumberFormat("en-CA", {
+  style: "currency",
+  currency: "CAD",
+});
+
+const formatPerGramPrice = (ingredient: Ingredient) => {
+  const perGramPrice = ingredient.packPrice / ingredient.packQuantity;
+  if (perGramPrice < 0.01) return `< ${priceFormatter.format(0.01)} per gram`;
+
+  return `${priceFormatter.format(0.01)} per gram`;
+};

@@ -61,8 +61,14 @@ const isNonEmptyIngedient = (ingredient: Ingredient) =>
 const IngredientRowSchema = z
   .tuple([
     z.string(), // name
-    z.union([z.literal("").transform(constant(1)), z.coerce.number()]), // unit quantity
-    z.coerce.number(), // unit price
+    z.union([
+      z.literal("").transform(constant(1)),
+      z
+        .string()
+        .transform((str) => str.replace(/,/g, ""))
+        .pipe(z.coerce.number()),
+    ]), // pack quantity
+    z.coerce.number(), // pack price
     z.union([
       z.literal("FALSE").transform(constFalse),
       z.literal("TRUE").transform(constTrue),

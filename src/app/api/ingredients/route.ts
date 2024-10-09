@@ -8,7 +8,7 @@ export async function GET() {
     getAuth(),
     getIngredients,
     apply(process.env.NEXT_PRIVATE_GOOGLE_SHEET_ID!),
-    apply("Prices!A2:E1000"),
+    apply("Prices!A2:D1000"),
     map((spreadsheet) => NextResponse.json(spreadsheet)),
     mapError((error) =>
       NextResponse.json({ error: error.message }, { status: 500 })
