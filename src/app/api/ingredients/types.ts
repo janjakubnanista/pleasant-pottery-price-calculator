@@ -1,7 +1,6 @@
 export interface Ingredient {
   name: string;
-  unitPrice: number;
-  unitQuantity: number;
-  unitAvailability?: number;
+  packPrice: number;
+  packQuantity: number;
   available: boolean;
 }

@@ -21,6 +21,7 @@ const Recipe: React.FC = () => {
   >("/api/ingredients", fetcher);
 
   const [items, setItems] = useState<IRecipeItem[]>([]);
+  const [newRecipeItemKey, setNewRecipeItemKey] = useState<number>(0);
   const itemsWithIngredients = useMemo(
     () => findIngredients(ingredients, items),
     [ingredients, items]
@@ -38,12 +39,14 @@ const Recipe: React.FC = () => {
   );
 
   const handleAddItem = useCallback(
-    (item: IRecipeItem) =>
+    (item: IRecipeItem) => {
       setItems((values) =>
         values
           .filter((value) => value.ingredientName !== item.ingredientName)
           .concat(item)
-      ),
+      );
+      setNewRecipeItemKey((key) => key + 1);
+    },
     [setItems]
   );
 
@@ -51,8 +54,6 @@ const Recipe: React.FC = () => {
 
   return (
     <div className="flex flex-col">
-      <NewRecipeItem ingredients={ingredients} onAdd={handleAddItem} />
-
       <div>
         {pipe(
           itemsWithIngredients,
@@ -66,7 +67,16 @@ const Recipe: React.FC = () => {
           ))
         )}
 
-        <RecipeItemLayout name="Total price" amount={`$${price}`} />
+        <NewRecipeItem
+          key={`new-recipe-item-${newRecipeItemKey}`}
+          ingredients={ingredients}
+          onAdd={handleAddItem}
+        />
+
+        <RecipeItemLayout
+          name="Total price"
+          amount={priceFormatter.format(price)}
+        />
       </div>
 
       <div>
@@ -121,36 +131,39 @@ const NewRecipeItem: React.FC<{
   const quantityAsNumber = Number(quantity);
   const canSubmit = ingredient != null && !isNaN(quantityAsNumber);
 
-  const handleClickAdd = useCallback(() => {
-    if (!canSubmit) return;
+  const handleSubmit = useCallback(
+    (event: React.SyntheticEvent) => {
+      event.preventDefault();
 
-    onAdd({ ingredientName: ingredient.name, quantity: quantityAsNumber });
-  }, [ingredient, quantityAsNumber, canSubmit, onAdd]);
+      if (!canSubmit) return;
+
+      onAdd({ ingredientName: ingredient.name, quantity: quantityAsNumber });
+    },
+    [ingredient, quantityAsNumber, canSubmit, onAdd]
+  );
 
   return (
-    <RecipeItemLayout
-      name={
-        <IngredientPicker
-          ingredient={ingredient}
-          ingredients={ingredients}
-          onChange={setIngredient}
-        />
-      }
-      amount={
-        <input
-          type="number"
-          className="p-2 placeholder-textSecondary"
-          min="0"
-          placeholder="Quantity"
-          onChange={handleChangeQuantity}
-        />
-      }
-      extra={
-        <button disabled={!canSubmit} onClick={handleClickAdd}>
-          Add
-        </button>
-      }
-    />
+    <form onSubmit={handleSubmit}>
+      <RecipeItemLayout
+        name={
+          <IngredientPicker
+            ingredient={ingredient}
+            ingredients={ingredients}
+            onChange={setIngredient}
+          />
+        }
+        amount={
+          <input
+            type="number"
+            className="p-2 placeholder-textSecondary text-right"
+            min="0"
+            placeholder="Quantity"
+            onChange={handleChangeQuantity}
+          />
+        }
+        extra={<button disabled={!canSubmit}>Add</button>}
+      />
+    </form>
   );
 };
 
@@ -164,8 +177,8 @@ const RecipeItem: React.FC<{
 
   return (
     <RecipeItemLayout
-      name={item.ingredient.name}
-      amount={item.item.quantity}
+      name={<span className="font-bold">{item.ingredient.name}</span>}
+      amount={`${item.item.quantity}g`}
       extra={
         <button onClick={handleDelete} aria-label="Remove" title="Remove">
           Remove
@@ -231,6 +244,11 @@ const calculatePrice = flow(
   reduce(
     0,
     (price: number, { ingredient, item }: IRecipeItemAndIngredient) =>
-      price + ingredient.unitPrice * item.quantity
+      price + (ingredient.packQuantity / ingredient.packPrice) * item.quantity
   )
 );
+
+const priceFormatter = new Intl.NumberFormat("en-CA", {
+  style: "currency",
+  currency: "CAD",
+});

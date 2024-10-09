@@ -60,27 +60,25 @@ const deserializeIngredientsValues = tryCatchKE(
 );
 
 const isNonEmptyIngedient = (ingredient: Ingredient) =>
-  ingredient.name.trim() !== "" && ingredient.unitPrice !== 0;
+  ingredient.name.trim() !== "" &&
+  ingredient.packPrice !== 0 &&
+  ingredient.packQuantity !== 0;
 
 const IngredientRowSchema = z
   .tuple([
     z.string(), // name
     z.union([z.literal("").transform(constant(1)), z.coerce.number()]), // unit quantity
     z.coerce.number(), // unit price
-    z.union([z.literal("").transform(constUndefined), z.coerce.number()]), // unit availability
     z.union([
       z.literal("FALSE").transform(constFalse),
       z.literal("TRUE").transform(constTrue),
     ]), // available
   ])
-  .transform(
-    ([name, unitQuantity, unitPrice, unitAvailability, available]) => ({
-      name,
-      unitQuantity,
-      unitPrice,
-      unitAvailability,
-      available,
-    })
-  ) satisfies ZodSchema<Ingredient, ZodTypeDef, unknown>;
+  .transform(([name, packQuantity, packPrice, available]) => ({
+    name,
+    packQuantity,
+    packPrice,
+    available,
+  })) satisfies ZodSchema<Ingredient, ZodTypeDef, unknown>;
 
 const IngredientRowsSchema = z.array(IngredientRowSchema);
