@@ -12,6 +12,8 @@ import { fromNullable, map as mapO, toNullable } from "fp-ts/lib/Option";
 import { map as mapA } from "fp-ts/lib/Array";
 import { lookup } from "fp-ts/lib/Record";
 import IngredientPicker from "./component-ingredient-picker";
+import MinusCircleIcon from "@heroicons/react/24/solid/MinusCircleIcon";
+import PlusCircleIcon from "@heroicons/react/24/solid/PlusCircleIcon";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -178,7 +180,7 @@ const NewRecipeItem: React.FC<{
         amount={
           <input
             type="number"
-            className="p-2 placeholder-textSecondary text-right"
+            className="p-2 placeholder-textSecondary text-right rounded-md"
             min="0"
             placeholder="Quantity"
             onChange={handleChangeQuantity}
@@ -189,7 +191,7 @@ const NewRecipeItem: React.FC<{
             disabled={!canSubmit}
             className={canSubmit ? "cursor-pointer" : "cursor-not-allowed"}
           >
-            Add
+            <PlusCircleIcon className="w-6" />
           </button>
         }
       />
@@ -216,7 +218,7 @@ const RecipeItem: React.FC<{
       amount={priceFormatter.format(getItemPrice(item))}
       extra={
         <button onClick={handleDelete} aria-label="Remove" title="Remove">
-          Remove
+          <MinusCircleIcon className="w-6" />
         </button>
       }
     />
@@ -233,7 +235,7 @@ const MissingIngredientRecipeItem: React.FC<{
     <div className="p-2 text-red-500">
       Could not find ingredient <em>{item.ingredientName}</em>.{" "}
       <button onClick={handleDelete} aria-label="Remove" title="Remove">
-        ╳
+        <MinusCircleIcon className="w-6" />
       </button>
     </div>
   );

@@ -39,7 +39,7 @@ const IngredientPicker: React.FC<{
     >
       <ComboboxInput
         aria-label="Ingredient"
-        className="p-2"
+        className="p-2 rounded-md"
         placeholder="Select ingredient"
         displayValue={(ingredient: Ingredient | null | undefined) =>
           ingredient ? ingredient.name : ""
