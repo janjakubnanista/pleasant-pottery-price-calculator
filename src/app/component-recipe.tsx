@@ -81,8 +81,23 @@ const Recipe: React.FC = () => {
         />
 
         <RecipeItemLayout
-          name="Total price"
+          name="Ingredients price"
           amount={priceFormatter.format(price)}
+        />
+
+        <RecipeItemLayout
+          name="10% Studio charge"
+          amount={priceFormatter.format(price * STUDIO_CHARGE)}
+        />
+
+        <RecipeItemLayout
+          name="5% GST"
+          amount={priceFormatter.format(price * GST)}
+        />
+
+        <RecipeItemLayout
+          name="Total price"
+          amount={priceFormatter.format(price * (1 + GST + STUDIO_CHARGE))}
         />
       </div>
 
@@ -136,7 +151,8 @@ const NewRecipeItem: React.FC<{
   );
 
   const quantityAsNumber = Number(quantity);
-  const canSubmit = ingredient != null && !isNaN(quantityAsNumber);
+  const canSubmit =
+    ingredient != null && !isNaN(quantityAsNumber) && quantityAsNumber > 0;
 
   const handleSubmit = useCallback(
     (event: React.SyntheticEvent) => {
@@ -168,7 +184,14 @@ const NewRecipeItem: React.FC<{
             onChange={handleChangeQuantity}
           />
         }
-        extra={<button disabled={!canSubmit}>Add</button>}
+        extra={
+          <button
+            disabled={!canSubmit}
+            className={canSubmit ? "cursor-pointer" : "cursor-not-allowed"}
+          >
+            Add
+          </button>
+        }
       />
     </form>
   );
@@ -267,3 +290,6 @@ const priceFormatter = new Intl.NumberFormat("en-CA", {
 
 const getItemPrice = ({ ingredient, item }: IRecipeItemAndIngredient) =>
   (ingredient.packPrice / ingredient.packQuantity) * item.quantity;
+
+const STUDIO_CHARGE = 0.1;
+const GST = 0.05;
