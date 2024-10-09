@@ -20,7 +20,10 @@ const Recipe: React.FC = () => {
     Ingredient[]
   >("/api/ingredients", fetcher);
   const availableIngredients = useMemo(
-    () => ingredients.filter(({ available }) => available),
+    () =>
+      ingredients
+        .filter(({ available }) => available)
+        .sort(({ name: nameA }, { name: nameB }) => nameA.localeCompare(nameB)),
     [ingredients]
   );
 
